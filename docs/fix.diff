@@ -1,0 +1,78 @@
+diff --git a/gopenconfig/yang/github.com/aristanetworks/yang/experimental/eos/models/ospf/ietf-dynamic-flooding-ospf@2019-09-01.yang b/gopenconfig/yang/github.com/aristanetworks/yang/experimental/eos/models/ospf/ietf-dynamic-flooding-ospf@2019-09-01.yang
+index a26db13b62..37cd240d75 100644
+--- a/gopenconfig/yang/github.com/aristanetworks/yang/experimental/eos/models/ospf/ietf-dynamic-flooding-ospf@2019-09-01.yang
++++ b/gopenconfig/yang/github.com/aristanetworks/yang/experimental/eos/models/ospf/ietf-dynamic-flooding-ospf@2019-09-01.yang
+@@ -183,45 +183,41 @@ module ietf-dynamic-flooding-ospf {
+         "the number of ID present in this
+          TLV entry";
+     }
+-    choice originating-router-id {
++    container router-id {
++      when "../connection-type = 1" {
++        description
++          "Only applies when
++           connection type is Router";
++      }
+       description
+-        "list of the originating-router-ids";
+-      container router-id {
+-        when "derived-from(../connection-type,'router')" {
+-          description
+-            "Only applies when
+-             connection type is Router";
+-        }
++        "originating-router-id";
++      leaf-list originating-router-id {
++        type yang:dotted-quad;
++        description
++          "list of the
++           originating-router-ids";
++      }
++    }
++    container designated-router-id {
++      when "../connection-type = 2" {
++        description
++          "Only applies when
++           connection type is designated Router";
++      }
++      description
++        "originating-router-id";
++      list originating-router-id-list {
+         description
+           "originating-router-id";
+-        leaf-list originating-router-id {
++        leaf originating-router-id {
+           type yang:dotted-quad;
+           description
+-            "list of the
+-             originating-router-ids";
+-        }
+-      }
+-      container designated-router-id {
+-        when "derived-from(../connection-type,'designated-router')" {
+-          description
+-            "Only applies when
+-             connection type is designated Router";
++            "originating-router-ids";
+         }
+-        description
+-          "originating-router-id";
+-        list originating-router-id-list {
++        leaf inteface-id {
++          type yang:dotted-quad;
+           description
+-            "originating-router-id";
+-          leaf originating-router-id {
+-            type yang:dotted-quad;
+-            description
+-              "originating-router-ids";
+-          }
+-          leaf inteface-id {
+-            type yang:dotted-quad;
+-            description
+-              "interface-ids";
+-          }
++            "interface-ids";
+         }
+       }
+     }

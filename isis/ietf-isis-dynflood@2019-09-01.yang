@@ -1,0 +1,502 @@
+module ietf-isis-dynflood {
+  yang-version 1.1;
+
+  // IETF:
+
+  namespace "urn:ietf:params:xml:ns:yang:ietf-isis-dynflood";
+
+  // OpenConfig:
+  // namespace "http://openconfig.net/yang/openconfig-isis-dynflood";
+
+  prefix isis-dynflood;
+
+  // OpenConfig:
+  // import openconfig-network-instance {
+  //   prefix oc-netinst;
+  // }
+  // NB: This module is currently under development and is intended 
+  // to augment the IETF IS-IS module (currently 
+  // draft-ietf-isis-yang-isis-cfg-36). While that is in process, we 
+  // are developing against the openconfig model, and references to 
+  // IETF paths are commented out.
+  // IETF:
+
+  import ietf-routing {
+    prefix rt;
+    reference
+      "RFC 8349: A YANG Data Model for Routing Management
+       (NMDA Version)";
+  }
+  import ietf-isis {
+    prefix isis;
+    reference
+      "RFC ZZZZ: YANG Data Model for IS-IS Protocol";
+  }
+
+  organization
+    "IETF LSR Working Group";
+  contact
+    "WG List: <mailto:lsr@ietf.org>";
+  description
+    "
+
+     First draft of a YANG model for IS-IS dynamic flooding.
+
+     Copyright (c) 2019 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
+
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject to
+     the license terms contained in, the Simplified BSD License set
+     forth in Section 4.c of the IETF Trust's Legal Provisions
+     Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+     for full legal notices.
+
+     The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
+     NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
+     'MAY', and 'OPTIONAL' in this document are to be interpreted as
+     described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
+     they appear in all capitals, as shown here.
+
+     Editors:
+     Srinath Dontula
+     <mailto:sd947e@att.com>
+
+     Tony Li
+     <mailto:tony.li@tony.li>";
+
+  revision 2019-09-01 {
+    description
+      "Initial revision";
+    reference
+      "RFC XXXX";
+  }
+
+  // OpenConfig:
+  // typedef extended-system-id {
+  //   type string {
+  //     pattern
+  //       '[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.'
+  //       +'[0-9][0-9]';
+  //   }
+  //   description
+  //     "This type defines IS-IS system-id using pattern. The 
+  //      extended system-id contains the pseudonode number in 
+  //      addition to the system-id.
+  //      An example system-id is 0143.0438.AEF0.00";
+  // }
+
+  feature area-leader {
+    description
+      "Election of a leader for the area.";
+  }
+
+  feature dynamic-flooding {
+    if-feature "area-leader";
+    description
+      "Compute a reduced flooding topology.";
+  }
+
+  grouping area-leader-global-cfg {
+    description
+      "Enable area leader capability";
+    leaf value {
+      type boolean;
+      default "false";
+      description
+        "Enable area leader capability";
+    }
+  }
+
+  grouping area-leader-priority-cfg {
+    description
+      "Set the area leader priority";
+    leaf value {
+      type uint8;
+      default "200";
+      description
+        "Area leader priority";
+    }
+  }
+
+  grouping area-leader-algorithm-cfg {
+    description
+      "Select the flooding topology computation algorithm";
+    leaf value {
+      type uint8;
+      default "0";
+      description
+        "Dynamic flooding algorithm selection";
+    }
+  }
+
+  grouping area-leader-parameters {
+    description
+      "Area leader configuration parameters";
+    container area-leader {
+      description
+        "Area leader configuration parameters";
+      container config {
+        description
+          "Area leader configuration";
+        container enable {
+          if-feature "area-leader";
+          description
+            "Area leader global enable configuration";
+          uses area-leader-global-cfg;
+          container level-1 {
+            description
+              "level-1 specific configuration";
+            uses area-leader-global-cfg;
+          }
+          container level-2 {
+            description
+              "level-2 specific configuration";
+            uses area-leader-global-cfg;
+          }
+        }
+        container priority {
+          if-feature "area-leader";
+          description
+            "Area leader priority configuration";
+          uses area-leader-priority-cfg;
+          container level-1 {
+            description
+              "level-1 specific configuration";
+            uses area-leader-priority-cfg;
+          }
+          container level-2 {
+            description
+              "level-2 specific configuration";
+            uses area-leader-priority-cfg;
+          }
+        }
+        container algorithm {
+          if-feature "dynamic-flooding";
+          description
+            "Area leader algorithm configuration";
+          uses area-leader-algorithm-cfg;
+          container level-1 {
+            description
+              "level-1 specific configuration";
+            uses area-leader-algorithm-cfg;
+          }
+          container level-2 {
+            description
+              "level-2 specific configuration";
+            uses area-leader-algorithm-cfg;
+          }
+        }
+      }
+    }
+  }
+
+  grouping dynamic-flooding-global-cfg {
+    description
+      "Enable dynamic flooding capability";
+    leaf value {
+      type boolean;
+      default "false";
+      description
+        "Enable dynamic flooding capability";
+    }
+  }
+
+  grouping dynamic-flooding-parameters {
+    description
+      "Dynamic flooding configuration parameters";
+    container dynamic-flooding {
+      description
+        "Dynamic flooding configuration parameters";
+      container config {
+        description
+          "Dynamic flooding configuration";
+        container enable {
+          if-feature "dynamic-flooding";
+          description
+            "Dynamic flooding global enable configuration";
+          uses dynamic-flooding-global-cfg;
+          container level-1 {
+            description
+              "level-1 specific configuration";
+            uses dynamic-flooding-global-cfg;
+          }
+          container level-2 {
+            description
+              "level-2 specific configuration";
+            uses dynamic-flooding-global-cfg;
+          }
+        }
+      }
+    }
+  }
+
+  // IETF:
+
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/isis:isis" {
+    // OpenConfig:
+    // augment "/oc-netinst:network-instances/" +
+    //   "oc-netinst:network-instance/oc-netinst:protocols/" +
+    //   "oc-netinst:protocol/oc-netinst:isis/oc-netinst:global" {
+    description
+      "Area leader and dynamic flooding configuration additions";
+    uses area-leader-parameters;
+    uses dynamic-flooding-parameters;
+  }
+
+  grouping dynamic-flooding-paths {
+    description
+      "List of paths in the topology";
+    list paths {
+      config false;
+      description
+        "A list of paths";
+      leaf-list path {
+        type uint16;
+        description
+          "A list of node indicies";
+      }
+    }
+  }
+
+  grouping dynamic-flooding-topology {
+    description
+      "List of paths in the topology";
+    list paths {
+      config false;
+      description
+        "A list of paths";
+      leaf-list path {
+        type string;
+        description
+          "A list of node names";
+      }
+    }
+  }
+
+  grouping dynamic-flooding-interfaces {
+    description
+      "List of flooding topology interfaces";
+    list interfaces {
+      config false;
+      description
+        "List of interfaces and their temporary status";
+      leaf inteface {
+        type string;
+        description
+          "Interface name";
+      }
+      leaf temporary {
+        type boolean;
+        description
+          "Set for partition repair or new adjacencies";
+      }
+    }
+  }
+
+  grouping area-leader-state {
+    description
+      "Area leader state information";
+    container area-leader-state {
+      description
+        "Area leader election result";
+      leaf area-leader {
+        type string;
+        description
+          "Hostname of the area leader";
+      }
+    }
+  }
+
+  grouping dynamic-flooding-state {
+    description
+      "State information for dynamic flooding";
+    container area-node-ids {
+      if-feature "dynamic-flooding";
+      description
+        "Area node ids and indices";
+      container area-node-ids {
+        description
+          "List of nodes and indices";
+        list node-index {
+          key "index";
+          description
+            "List of nodes and their indices";
+          leaf index {
+            type uint16;
+            description
+              "Index for the node";
+          }
+          leaf node-id {
+            // OpenConfig:
+            // type extended-system-id;
+            // IETF:
+            type isis:extended-system-id;
+            description
+              "Node id for the node";
+          }
+        }
+      }
+    }
+    container dynamic-flooding-paths {
+      if-feature "dynamic-flooding";
+      description
+        "Flooding topology with explicit paths";
+      uses dynamic-flooding-paths;
+    }
+    container dynamic-flooding-topology {
+      if-feature "dynamic-flooding";
+      description
+        "Flooding topology with system names";
+      uses dynamic-flooding-topology;
+    }
+    container dynamic-flooding-interfaces {
+      if-feature "dynamic-flooding";
+      description
+        "Interfaces on the flooding topology";
+      uses dynamic-flooding-interfaces;
+    }
+  }
+
+  // IETF:
+
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/isis:isis" {
+    // OpenConfig:
+    // augment "/oc-netinst:network-instances/" +
+    //   "oc-netinst:network-instance/oc-netinst:protocols/" +
+    //   "oc-netinst:protocol/oc-netinst:isis/" +
+    //   "oc-netinst:levels/oc-netinst:level/oc-netinst:state" {
+    description
+      "Area leader and dynamic flooding state additions";
+    uses area-leader-state;
+    uses dynamic-flooding-state;
+  }
+
+  grouping subtlv27-area-leader {
+    description
+      "Router capability subTLV for area leader capability";
+    container area-leader {
+      description
+        "Area leader subTLV for router capabilities";
+      leaf priority {
+        type uint8;
+        description
+          "Area leader priority";
+      }
+      leaf algorithm {
+        type uint8;
+        description
+          "Algorithm index for computing the flooding topology";
+      }
+    }
+  }
+
+  grouping subtlv28-dynamic-flooding {
+    description
+      "Dynamic flooding capability subTLV";
+    container dynamic-flooding {
+      description
+        "Dynamic flooding capability subTLV";
+      leaf-list algorithms {
+        type uint8;
+        description
+          "Supported algorithm indices for distributed mode";
+      }
+    }
+  }
+
+  // OpenConfig:
+  // augment "/oc-netinst:network-instances/" +
+  //   "oc-netinst:network-instance/" +
+  //   "oc-netinst:protocols/oc-netinst:protocol/oc-netinst:isis/" +
+  //   "oc-netinst:levels/oc-netinst:level/" +
+  //   "oc-netinst:link-state-database/" +
+  //   "oc-netinst:lsp/oc-netinst:tlvs/oc-netinst:tlv/" +
+  //   "oc-netinst:router-capabilities/oc-netinst:capability/" +
+  //   "oc-netinst:subtlvs/oc-netinst:subtlv" {
+  // IETF:
+
+  augment
+    "/rt:routing/rt:control-plane-protocols"
+  + "/rt:control-plane-protocol/isis:isis"
+  + "/isis:database/isis:levels/isis:lsp/isis:router-capabilities/"
+  + "isis:router-capability" {
+    description
+      "Additional router capability subTLVs for dynamic flooding";
+    uses subtlv27-area-leader;
+    uses subtlv28-dynamic-flooding;
+  }
+
+  grouping tlv17-area-node-ids {
+    description
+      "TLV 17: Area Node IDs";
+    container area-node-ids {
+      description
+        "Dynamic flooding node id assignment TLV";
+      leaf starting-index {
+        type uint8;
+        description
+          "Starting index for the node ids in this TLV.";
+      }
+      leaf flags {
+        type bits {
+          bit last {
+            position 0;
+            description
+              "Set if this is the highest set of indices in the 
+	       area.";
+          }
+        }
+        description
+          "Flags field in the TLV.";
+      }
+      leaf-list nodes {
+        // OpenConfig:
+        // type extended-system-id;
+        // IETF:
+        type isis:extended-system-id;
+        description
+          "Nodes being assigned indices";
+      }
+    }
+  }
+
+  grouping tlv18-flooding-path {
+    description
+      "Flooding topology path TLV";
+    container flooding-path {
+      description
+        "Dynamic flooding path TLV";
+      leaf-list nodes {
+        type uint16;
+        description
+          "Nodes in the path";
+      }
+    }
+  }
+
+  // OpenConfig:
+  // augment "/oc-netinst:network-instances/" +
+  //   "oc-netinst:network-instance/oc-netinst:protocols/" +
+  //   "oc-netinst:protocol/oc-netinst:isis/" +
+  //   "oc-netinst:levels/oc-netinst:level/" +
+  //   "oc-netinst:link-state-database/" +
+  //   "oc-netinst:lsp/oc-netinst:tlvs/oc-netinst:tlv" {
+  // IETF:
+
+  augment
+    "/rt:routing/rt:control-plane-protocols"
+  + "/rt:control-plane-protocol/isis:isis/isis:database/isis:levels/"
+  + "isis:lsp" {
+    description
+      "Additional TLVs for dynamic flooding";
+    uses tlv17-area-node-ids;
+    uses tlv18-flooding-path;
+  }
+}
