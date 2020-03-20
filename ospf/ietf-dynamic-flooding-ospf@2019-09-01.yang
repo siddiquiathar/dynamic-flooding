@@ -29,8 +29,14 @@ module ietf-dynamic-flooding-ospf {
      WG List:
      <mailto: lsr@ietf.org>
 
-     Editor:\tSrinath Dontula
-     \t<mailto: sd947e@att.com>";
+     Editors:
+     Srinath Dontula
+     <mailto:sd947e@att.com>
+
+     Athar Siddiqui
+     <mailto:as2745@att.com>
+    ";
+ 
   description
     "
      Copyright (c) 2019 IETF Trust and the persons identified as
@@ -97,7 +103,7 @@ module ietf-dynamic-flooding-ospf {
       description
         "Router's priority for Area leader";
     }
-    leaf Algorithm {
+    leaf algorithm {
       type uint8;
       description
         "Router's Algorithm to calculate the Flooding
@@ -109,7 +115,7 @@ module ietf-dynamic-flooding-ospf {
     description
       "Dynamic-flooding TLV for OSPFv2/OSPFv3.
        A TLV of RI LSA";
-    leaf-list algorithm {
+    leaf-list algorithms {
       type uint8;
       description
         "List of Algorithms supported by the
@@ -302,6 +308,29 @@ module ietf-dynamic-flooding-ospf {
    * Dynamic flooding config augmentation to OSPF Module
    */
 
+  grouping area-leader-configuration {
+    description
+      "Enable area leader capability";
+    leaf enable {
+      type boolean;
+      default "false";
+      description
+        "Enable area leader capability";
+    }
+    leaf priority {
+      type uint8;
+      description
+        "Area leader priority";
+    }
+    leaf algorithm {
+      type uint8;
+      description
+        "Dynamic flooding algorithm selection";
+    }
+
+  }
+
+
   augment
     "/rt:routing/rt:control-plane-protocols/"
   + "rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area" {
@@ -317,6 +346,11 @@ module ietf-dynamic-flooding-ospf {
         type boolean;
         description
           "Enable/Disable dynamic-flooding";
+      }
+      container area-leader {
+        description
+          "Area leader configuration parameters";
+        uses area-leader-configuration;
       }
     }
   }
