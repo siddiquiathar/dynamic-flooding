@@ -24,17 +24,29 @@ module ietf-dynamic-flooding-ospf {
     "IETF LSR - Link State Routing Working Group";
   contact
     "
-     WG Web:
-     <https://datatracker.ietf.org/group/lsr/about/>
-     WG List:
-     <mailto: lsr@ietf.org>
+    WG Web:
+      <https://datatracker.ietf.org/group/lsr/about/>
+    WG List:
+      <mailto: lsr@ietf.org>
 
-     Editors:
-     Srinath Dontula
-     <mailto:sd947e@att.com>
-
-     Athar Siddiqui
-     <mailto:as2745@att.com>
+    Editor: Srinath Dontula
+        <mailto: sd947e@att.com>
+    Author: Tony Li
+        <mailto: tony.li@tony.li>
+    Author: Peter Psenak
+        <mialto: ppsenak@cisco.com>
+    Author: Les Ginsberg
+        <mailto: ginsberg@cisco.com>
+    Author: Huaimo Chen
+        <mailto: hcen@futurewei.com>
+    Author: Tony Przygienda
+        <mailto: prz@juniper.net>
+    Author: Dave Cooper
+        <mailto: dave.cooper@centurylink.com>
+    Author: Luay Jalil
+        <mailto: luay.jalil@verizon.com>
+    Author: Athar Siddiqui
+        <mailto: athar@att.com>
     ";
  
   description
