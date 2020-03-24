@@ -1,19 +1,29 @@
 
 module: ietf-dynamic-flooding-ospf
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas
+            /ospf:area:
     +--rw dynamic-flooding {dynamic-flooding-ospf}?
        +--rw enable?        boolean
        +--rw area-leader
           +--rw enable?      boolean
           +--rw priority?    uint8
           +--rw algorithm?   uint8
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area/ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
     |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
        +--ro algorithms*   uint8
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area/ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body:
     +--ro ospfv2-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv2-area-router-id-tlv
        |  +--ro start-index?                  uint16
@@ -25,16 +35,30 @@ module: ietf-dynamic-flooding-ospf
        +--ro flooding-path-tlv
           +--ro start-index?   uint16
           +--ro indices*       uint16
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area/ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque/ospf:extended-link-opaque/ospf:extended-link-tlv:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque
+            /ospf:extended-link-opaque/ospf:extended-link-tlv:
     +--ro ospf-link-attributes-bits-tlv {dynamic-flooding-ospf}?
        +--ro link-attributes-bits?   bits
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area/ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body/ospf:router-information:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body
+            /ospf:router-information:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
     |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
        +--ro algorithms*   uint8
-  augment /rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area/ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body:
+  augment /rt:routing/rt:control-plane-protocols
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body:
     +--ro ospfv3-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv3-area-router-id-tlv
        |  +--ro start-index?                  uint16
