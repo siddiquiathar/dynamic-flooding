@@ -1,7 +1,7 @@
 module ietf-dynamic-flooding-ospf {
   yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf";
-  prefix ospf-df;
+  prefix ospf-dynflood;
 
   import ietf-ospf {
     prefix ospf;
@@ -24,31 +24,18 @@ module ietf-dynamic-flooding-ospf {
     "IETF LSR - Link State Routing Working Group";
   contact
     "
-    WG Web:
+     WG Web:
       <https://datatracker.ietf.org/group/lsr/about/>
-    WG List:
+     WG List:
       <mailto: lsr@ietf.org>
 
-    Editor: Srinath Dontula
+     Editor: Srinath Dontula
         <mailto: sd947e@att.com>
-    Author: Tony Li
+     Author: Tony Li
         <mailto: tony.li@tony.li>
-    Author: Peter Psenak
-        <mialto: ppsenak@cisco.com>
-    Author: Les Ginsberg
-        <mailto: ginsberg@cisco.com>
-    Author: Huaimo Chen
-        <mailto: hcen@futurewei.com>
-    Author: Tony Przygienda
-        <mailto: prz@juniper.net>
-    Author: Dave Cooper
-        <mailto: dave.cooper@centurylink.com>
-    Author: Luay Jalil
-        <mailto: luay.jalil@verizon.com>
-    Author: Athar Siddiqui
+     Author: Athar Siddiqui
         <mailto: athar@att.com>
     ";
- 
   description
     "
      Copyright (c) 2019 IETF Trust and the persons identified as
@@ -79,20 +66,6 @@ module ietf-dynamic-flooding-ospf {
     reference
       " RFC YYYY: Dynamic Flooding on Dense Graphs";
   }
-
-  /*
-   *	identity ospfv2-dynamic-flooding-opaque-lsa {
-   *		base ospf:ospfv2-area-scope-opaque-lsa;
-   *		description
-   *			"OSPFv2 dynamic-flooding-opaque-lsa.";
-   *	}
-   *
-   *	identity ospfv3-dynamic-flooding-opaque-lsa {
-   *		base ospf:ospfv3-lsa-type;
-   *		description
-   *			"OSPFv3 dynamic-flooding-opaque-lsa.";
-   *	}
-   */
 
   identity ospfv2-dynamic-flooding-opaque-lsa {
     base ospf:ospfv2-opaque-lsa-type;
@@ -202,7 +175,7 @@ module ietf-dynamic-flooding-ospf {
          TLV entry";
     }
     container router-id {
-      when "../connection-type = 1" {
+      when '../connection-type = 1' {
         description
           "Only applies when
            connection type is Router";
@@ -217,7 +190,7 @@ module ietf-dynamic-flooding-ospf {
       }
     }
     container designated-router-id {
-      when "../connection-type = 2" {
+      when '../connection-type = 2' {
         description
           "Only applies when
            connection type is designated Router";
@@ -339,9 +312,7 @@ module ietf-dynamic-flooding-ospf {
       description
         "Dynamic flooding algorithm selection";
     }
-
   }
-
 
   augment
     "/rt:routing/rt:control-plane-protocols/"

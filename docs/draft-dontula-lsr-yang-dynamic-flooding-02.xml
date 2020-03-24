@@ -9,7 +9,6 @@
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC2328 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2328.xml">
 <!ENTITY RFC3688 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3688.xml">
-<!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
 <!ENTITY RFC7950 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7950.xml">
 <!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8340 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8340.xml">
@@ -140,7 +139,7 @@
 
        <phone></phone>
 
-       <email>as2745@att.com</email>
+       <email>athar@att.com</email>
 
        <!-- uri and facsimile elements may also be added -->
      </address>
@@ -218,7 +217,8 @@
 
 module: ietf-dynamic-flooding-ospf
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas
+            /ospf:area:
     +--rw dynamic-flooding {dynamic-flooding-ospf}?
        +--rw enable?        boolean
        +--rw area-leader
@@ -226,20 +226,20 @@ module: ietf-dynamic-flooding-ospf
           +--rw priority?    uint8
           +--rw algorithm?   uint8
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-      /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-      /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-      /ospf:body/ospf:opaque:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
     |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
        +--ro algorithms*   uint8
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-      /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-      /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-      /ospf:body:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body:
     +--ro ospfv2-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv2-area-router-id-tlv
        |  +--ro start-index?                  uint16
@@ -252,28 +252,29 @@ module: ietf-dynamic-flooding-ospf
           +--ro start-index?   uint16
           +--ro indices*       uint16
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-      /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-      /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-      /ospf:body/ospf:opaque/ospf:extended-link-opaque
-      /ospf:extended-link-tlv:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque
+            /ospf:extended-link-opaque/ospf:extended-link-tlv:
     +--ro ospf-link-attributes-bits-tlv {dynamic-flooding-ospf}?
        +--ro link-attributes-bits?   bits
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-      /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-      /ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3
-      /ospf:body/ospf:router-information:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body
+            /ospf:router-information:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
     |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
        +--ro algorithms*   uint8
   augment /rt:routing/rt:control-plane-protocols
-      /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-      /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-      /ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3
-      /ospf:body:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body:
     +--ro ospfv3-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv3-area-router-id-tlv
        |  +--ro start-index?                  uint16
@@ -303,7 +304,7 @@ module: ietf-dynamic-flooding-ospf
 module ietf-dynamic-flooding-ospf {
   yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf";
-  prefix ospf-df;
+  prefix ospf-dynflood;
 
   import ietf-ospf {
     prefix ospf;
@@ -326,31 +327,18 @@ module ietf-dynamic-flooding-ospf {
     "IETF LSR - Link State Routing Working Group";
   contact
     "
-    WG Web:
+     WG Web:
       <https://datatracker.ietf.org/group/lsr/about/>
-    WG List:
+     WG List:
       <mailto: lsr@ietf.org>
 
-    Editor: Srinath Dontula
+     Editor: Srinath Dontula
         <mailto: sd947e@att.com>
-    Author: Tony Li
+     Author: Tony Li
         <mailto: tony.li@tony.li>
-    Author: Peter Psenak
-        <mialto: ppsenak@cisco.com>
-    Author: Les Ginsberg
-        <mailto: ginsberg@cisco.com>
-    Author: Huaimo Chen
-        <mailto: hcen@futurewei.com>
-    Author: Tony Przygienda
-        <mailto: prz@juniper.net>
-    Author: Dave Cooper
-        <mailto: dave.cooper@centurylink.com>
-    Author: Luay Jalil
-        <mailto: luay.jalil@verizon.com>
-    Author: Athar Siddiqui
+     Author: Athar Siddiqui
         <mailto: athar@att.com>
     ";
- 
   description
     "
      Copyright (c) 2019 IETF Trust and the persons identified as
@@ -381,20 +369,6 @@ module ietf-dynamic-flooding-ospf {
     reference
       " RFC YYYY: Dynamic Flooding on Dense Graphs";
   }
-
-  /*
-   *  identity ospfv2-dynamic-flooding-opaque-lsa {
-   *    base ospf:ospfv2-area-scope-opaque-lsa;
-   *    description
-   *      "OSPFv2 dynamic-flooding-opaque-lsa.";
-   *  }
-   *
-   *  identity ospfv3-dynamic-flooding-opaque-lsa {
-   *    base ospf:ospfv3-lsa-type;
-   *    description
-   *      "OSPFv3 dynamic-flooding-opaque-lsa.";
-   *  }
-   */
 
   identity ospfv2-dynamic-flooding-opaque-lsa {
     base ospf:ospfv2-opaque-lsa-type;
@@ -504,7 +478,7 @@ module ietf-dynamic-flooding-ospf {
          TLV entry";
     }
     container router-id {
-      when "../connection-type = 1" {
+      when '../connection-type = 1' {
         description
           "Only applies when
            connection type is Router";
@@ -519,7 +493,7 @@ module ietf-dynamic-flooding-ospf {
       }
     }
     container designated-router-id {
-      when "../connection-type = 2" {
+      when '../connection-type = 2' {
         description
           "Only applies when
            connection type is designated Router";
@@ -641,9 +615,7 @@ module ietf-dynamic-flooding-ospf {
       description
         "Dynamic flooding algorithm selection";
     }
-
   }
-
 
   augment
     "/rt:routing/rt:control-plane-protocols/"
@@ -1369,23 +1341,6 @@ module ietf-isis-dynflood {
        XML: N/A, the requested URI is an XML namespace.
 ]]></artwork>
      </figure>
-     <t>
-       This document registers two YANG modules in the YANG Module Names
-       registry <xref target="RFC6020"/>.
-     </t>
-     <figure align="left">
-       <artwork align="left"><![CDATA[
-       name: ietf-ospf-df
-       namespace: urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf
-       prefix: ospf-df
-       reference: RFC XXXX
-
-       name: ietf-isis-dynflood
-       namespace: urn:ietf:params:xml:ns:yang:ietf-isis-dynflood
-       prefix: isis-dynflood
-       reference: RFC XXXX
-]]></artwork>
-     </figure>
    </section>
 
  </middle>
@@ -1411,7 +1366,6 @@ module ietf-isis-dynflood {
      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
      &RFC2119;
      &RFC3688;
-     &RFC6020;
      &RFC7950;
      &RFC8174;
      &RFC8342;
