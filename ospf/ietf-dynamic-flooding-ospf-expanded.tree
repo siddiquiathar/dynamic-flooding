@@ -521,9 +521,9 @@ module: ietf-ospf
        |     |              |        |  |        +--ro ospf-df:link-attributes-bits?   bits
        |     |              |        |  +--ro ospf-df:area-leader-tlv {dynamic-flooding-ospf}?
        |     |              |        |  |  +--ro ospf-df:priority?    uint8
-       |     |              |        |  |  +--ro ospf-df:Algorithm?   uint8
+       |     |              |        |  |  +--ro ospf-df:algorithm?   uint8
        |     |              |        |  +--ro ospf-df:dynamic-flooding-tlv {dynamic-flooding-ospf}?
-       |     |              |        |     +--ro ospf-df:algorithm*   uint8
+       |     |              |        |     +--ro ospf-df:algorithms*   uint8
        |     |              |        +--ro ospf-df:ospfv2-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        |     |              |           +--ro ospf-df:ospfv2-area-router-id-tlv
        |     |              |           |  +--ro ospf-df:start-index?                  uint16
@@ -637,9 +637,9 @@ module: ietf-ospf
        |     |                       |  |     +--ro sbfd-discriminator?   uint32
        |     |                       |  +--ro ospf-df:area-leader-tlv {dynamic-flooding-ospf}?
        |     |                       |  |  +--ro ospf-df:priority?    uint8
-       |     |                       |  |  +--ro ospf-df:Algorithm?   uint8
+       |     |                       |  |  +--ro ospf-df:algorithm?   uint8
        |     |                       |  +--ro ospf-df:dynamic-flooding-tlv {dynamic-flooding-ospf}?
-       |     |                       |     +--ro ospf-df:algorithm*   uint8
+       |     |                       |     +--ro ospf-df:algorithms*   uint8
        |     |                       +--ro ospf-df:ospfv3-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        |     |                          +--ro ospf-df:ospfv3-area-router-id-tlv
        |     |                          |  +--ro ospf-df:start-index?                  uint16
@@ -1603,7 +1603,11 @@ module: ietf-ospf
        |     |           +--rw advertise?   boolean
        |     |           +--rw cost?        ospf-metric
        |     +--rw ospf-df:dynamic-flooding {dynamic-flooding-ospf}?
-       |        +--rw ospf-df:enable?   boolean
+       |        +--rw ospf-df:enable?        boolean
+       |        +--rw ospf-df:area-leader
+       |           +--rw ospf-df:enable?      boolean
+       |           +--rw ospf-df:priority?    uint8
+       |           +--rw ospf-df:algorithm?   uint8
        +--rw topologies {multi-topology}?
           +--rw topology* [name]
              +--rw name         -> ../../../../../../rt:ribs/rib/name

@@ -9,7 +9,6 @@
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC2328 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2328.xml">
 <!ENTITY RFC3688 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3688.xml">
-<!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
 <!ENTITY RFC7950 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7950.xml">
 <!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8340 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8340.xml">
@@ -119,14 +118,40 @@
      </address>
    </author>
 
-   <date year="2019" />
+   <author fullname="Athar Siddiqui" initials="A." 
+           surname="Siddiqui">
+     <organization>ATT</organization>
+
+     <address>
+       <postal>
+         <street>200 S. Laurel Ave</street>
+
+         <!-- Reorder these if your country does things differently -->
+
+         <city>Middletown</city>
+
+         <region>New Jersey</region>
+
+         <code>07748</code>
+
+         <country>United States of America</country>
+       </postal>
+
+       <phone></phone>
+
+       <email>athar@att.com</email>
+
+       <!-- uri and facsimile elements may also be added -->
+     </address>
+   </author>
+   <date year="2020" month="03"/>
 
    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
         in the current day for you. If only the current year is specified, xml2rfc will fill 
-	 in the current day and month for you. If the year is not the current one, it is 
-	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
-	 purpose of calculating the expiry date).  With drafts it is normally sufficient to 
-	 specify just the year. -->
+         in the current day and month for you. If the year is not the current one, it is 
+         necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
+         purpose of calculating the expiry date).  With drafts it is normally sufficient to 
+         specify just the year. -->
 
    <!-- Meta-data Declarations -->
 
@@ -136,7 +161,7 @@
 
    <!-- WG name at the upperleft corner of the doc,
         IETF is fine for individual submissions.  
-	 If this element is not present, the default is "Network Working Group",
+        If this element is not present, the default is "Network Working Group",
         which is used by the RFC Editor as a nod to the history of the IETF. -->
 
    <keyword>IS-IS multi-level hierarchical link-state routing</keyword>
@@ -148,7 +173,7 @@
 
    <abstract>
      <t>
-       This document defins YANG data models that can be used to
+       This document defines YANG data models that can be used to
        configure and manage Dynamic Flooding for IS-IS and OSPF.
      </t>
    </abstract>
@@ -179,8 +204,8 @@
      </t>
      <section title="Tree Diagrams">
        <t>
-	 Tree diagrams used in this document follow the notation defined in
-	 <xref target="RFC8340"/>.
+         Tree diagrams used in this document follow the notation defined in
+         <xref target="RFC8340"/>.
        </t>
      </section>
    </section>
@@ -188,28 +213,33 @@
    <section anchor="OSPF" title="OSPF Data Model">
      <section title="Tree Diagram">
        <figure align="left">
-	 <artwork align="left"><![CDATA[
+         <artwork align="left"><![CDATA[
 
 module: ietf-dynamic-flooding-ospf
   augment /rt:routing/rt:control-plane-protocols
-            /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area:
+            /rt:control-plane-protocol/ospf:ospf/ospf:areas
+            /ospf:area:
     +--rw dynamic-flooding {dynamic-flooding-ospf}?
-       +--rw enable?   boolean
+       +--rw enable?        boolean
+       +--rw area-leader
+          +--rw enable?      boolean
+          +--rw priority?    uint8
+          +--rw algorithm?   uint8
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-            /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-            /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-            /ospf:body/ospf:opaque:
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
-    |  +--ro Algorithm?   uint8
+    |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
-       +--ro algorithm*   uint8
+       +--ro algorithms*   uint8
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-            /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-            /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-            /ospf:body:
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body:
     +--ro ospfv2-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv2-area-router-id-tlv
        |  +--ro start-index?                  uint16
@@ -223,448 +253,514 @@ module: ietf-dynamic-flooding-ospf
           +--ro indices*       uint16
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-            /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-            /ospf:area-scope-lsa/ospf:version/ospf:ospfv2/ospf:ospfv2
-            /ospf:body/ospf:opaque/ospf:extended-link-opaque
-            /ospf:extended-link-tlv:
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque
+            /ospf:extended-link-opaque/ospf:extended-link-tlv:
     +--ro ospf-link-attributes-bits-tlv {dynamic-flooding-ospf}?
        +--ro link-attributes-bits?   bits
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-            /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-            /ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3
-            /ospf:body/ospf:router-information:
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body
+            /ospf:router-information:
     +--ro area-leader-tlv {dynamic-flooding-ospf}?
     |  +--ro priority?    uint8
-    |  +--ro Algorithm?   uint8
+    |  +--ro algorithm?   uint8
     +--ro dynamic-flooding-tlv {dynamic-flooding-ospf}?
-       +--ro algorithm*   uint8
+       +--ro algorithms*   uint8
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area
-            /ospf:database/ospf:area-scope-lsa-type/ospf:area-scope-lsas
-            /ospf:area-scope-lsa/ospf:version/ospf:ospfv3/ospf:ospfv3
-            /ospf:body:
+            /ospf:database/ospf:area-scope-lsa-type
+            /ospf:area-scope-lsas/ospf:area-scope-lsa/ospf:version
+            /ospf:ospfv3/ospf:ospfv3/ospf:body:
     +--ro ospfv3-dynamic-flooding-opaque-lsa {dynamic-flooding-ospf}?
        +--ro ospfv3-area-router-id-tlv
        |  +--ro start-index?                  uint16
        |  +--ro last-flag?                    bits
        |  +--ro ospfv3-router-id-tlv-entry* []
-       |     +--ro connection-type?              uint8
-       |     +--ro number-of-ids?                uint16
-       |     +--ro (originating-router-id)?
-       |        +--:(router-id)
-       |        |  +--ro router-id
-       |        |     +--ro originating-router-id*   yang:dotted-quad
-       |        +--:(designated-router-id)
-       |           +--ro designated-router-id
-       |              +--ro originating-router-id-list* []
-       |                 +--ro originating-router-id?   yang:dotted-quad
-       |                 +--ro inteface-id?             yang:dotted-quad
+       |     +--ro connection-type?        uint8
+       |     +--ro number-of-ids?          uint16
+       |     +--ro router-id
+       |     |  +--ro originating-router-id*   yang:dotted-quad
+       |     +--ro designated-router-id
+       |        +--ro originating-router-id-list* []
+       |           +--ro originating-router-id?   yang:dotted-quad
+       |           +--ro inteface-id?             yang:dotted-quad
        +--ro flooding-path-tlv
           +--ro start-index?   uint16
           +--ro indices*       uint16
+
 ]]></artwork>
        </figure>
      </section>
      <section title="OSPF YANG Module">
        <figure align="left">
-	 <artwork align="left"><![CDATA[
+         <artwork align="left"><![CDATA[
+
 <CODE BEGINS> file "ietf-dynamic-flooding-ospf@2019-09-01.yang"
+
 module ietf-dynamic-flooding-ospf {
-	yang-version 1.1;
-	namespace "urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf";
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf";
+  prefix ospf-dynflood;
 
-	prefix ospf-df;
+  import ietf-ospf {
+    prefix ospf;
+    reference
+      "RFC AAAA: YANG Data Model for OSPF Protocol";
+  }
+  import ietf-yang-types {
+    prefix yang;
+    reference
+      "RFC 6991: Common YANG Data Types";
+  }
+  import ietf-routing {
+    prefix rt;
+    reference
+      "RFC 8349 - A YANG Data Model for Routing
+       Management (NMDA Version)";
+  }
 
-	import ietf-ospf {
-		prefix "ospf";
-		reference 
-		"RFC AAAA: YANG Data Model for OSPF Protocol";
-	}
-	import ietf-yang-types {
-		prefix "yang";
-		reference "RFC 6991: Common YANG Data Types";
-	}
+  organization
+    "IETF LSR - Link State Routing Working Group";
+  contact
+    "
+     WG Web:
+      <https://datatracker.ietf.org/group/lsr/about/>
+     WG List:
+      <mailto: lsr@ietf.org>
 
-	import ietf-routing {
-	prefix "rt";
-	reference "RFC 8349 - A YANG Data Model for Routing
-				Management (NMDA Version)";
-	}
+     Editor: Srinath Dontula
+        <mailto: sd947e@att.com>
+     Author: Tony Li
+        <mailto: tony.li@tony.li>
+     Author: Athar Siddiqui
+        <mailto: athar@att.com>
+    ";
+  description
+    "
+     Copyright (c) 2019 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
 
-	organization
-		"IETF LSR - Link State Routing Working Group";
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject to
+     the license terms contained in, the Simplified BSD License set
+     forth in Section 4.c of the IETF Trust's Legal Provisions
+     Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
 
-	contact
-		"
-		WG Web:
-			<https://datatracker.ietf.org/group/lsr/about/>
-		WG List:
-			<mailto: lsr@ietf.org>
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+     for full legal notices.
+    ";
 
-		Editor:	Srinath Dontula
-				<mailto: sd947e@att.com>";
+  revision 2019-09-01 {
+    description
+      "Initial draft version.";
+    reference
+      "RFC XXXX: YANG Data Model for Dynamic Flooding";
+  }
 
-	description
-		"
-		Copyright (c) 2019 IETF Trust and the persons identified as
-		authors of the code.  All rights reserved.
+  feature dynamic-flooding-ospf {
+    description
+      "Support for OSPF dynamic flooding";
+    reference
+      " RFC YYYY: Dynamic Flooding on Dense Graphs";
+  }
 
-		Redistribution and use in source and binary forms, with or
-		without modification, is permitted pursuant to, and subject to
-		the license terms contained in, the Simplified BSD License set
-		forth in Section 4.c of the IETF Trust's Legal Provisions
-		Relating to IETF Documents
-		(https://trustee.ietf.org/license-info).
+  identity ospfv2-dynamic-flooding-opaque-lsa {
+    base ospf:ospfv2-opaque-lsa-type;
+    description
+      "OSPFv2 Dynamic Flooding Opaque LSA - Type 10";
+  }
 
-		This version of this YANG module is part of RFC XXXX
-		(https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
-		for full legal notices.
-		";
+  identity ospfv3-dynamic-flooding-opaque-lsa {
+    base ospf:ospfv3-lsa-type;
+    description
+      "OSPFv3 Dynamic Flooding LSA - Type 16";
+  }
 
-	revision 2019-09-01 {
-		description
-			"Initial draft version.";
-		reference
-			"RFC XXXX: YANG Data Model for Dynamic Flooding";
-	}
+  grouping ospf-area-leader-tlv {
+    description
+      "Area leader TLV for OSPFv2/OSPFv3.
+       A TLV of RI LSA";
+    leaf priority {
+      type uint8;
+      description
+        "Router's priority for Area leader";
+    }
+    leaf algorithm {
+      type uint8;
+      description
+        "Router's Algorithm to calculate the Flooding
+         Topology.";
+    }
+  }
 
-	feature dynamic-flooding-ospf {
-		description
-			"Support for OSPF dynamic flooding";
-		reference " RFC YYYY: Dynamic Flooding on Dense Graphs";
-	}
+  grouping dynamic-flooding-tlv {
+    description
+      "Dynamic-flooding TLV for OSPFv2/OSPFv3.
+       A TLV of RI LSA";
+    leaf-list algorithms {
+      type uint8;
+      description
+        "List of Algorithms supported by the
+         advertising node";
+    }
+  }
 
+  grouping ospfv2-area-router-id-tlv-entry {
+    description
+      "ospfv2 area router ID TLV enties";
+    leaf connection-type {
+      type uint8;
+      description
+        "Defines the connection type ";
+    }
+    leaf number-of-ids {
+      type uint16;
+      description
+        "the number of ID present in this TLV entry";
+    }
+    leaf-list originating-router-id {
+      type yang:dotted-quad;
+      description
+        "list of the originating-router-ids";
+    }
+  }
 
-/*
-*	identity ospfv2-dynamic-flooding-opaque-lsa {
-*		base ospf:ospfv2-area-scope-opaque-lsa;
-*		description
-*			"OSPFv2 dynamic-flooding-opaque-lsa.";
-*	}
-*
-*	identity ospfv3-dynamic-flooding-opaque-lsa {
-*		base ospf:ospfv3-lsa-type;
-*		description
-*			"OSPFv3 dynamic-flooding-opaque-lsa.";
-*	}
-*/
+  grouping ospfv2-area-router-id-tlv {
+    description
+      "definition for OSPFv2 Dynamic flooding area
+       router-ID TLV";
+    leaf start-index {
+      type uint16;
+      description
+        "Starting index of the first
+         router/designated router ID";
+    }
+    leaf last-flag {
+      type bits {
+        bit last-router-designated-router-id {
+          description
+            "when set, this TLV is the
+             last Index in the full list
+             of router IDs for the area";
+          reference
+            "RFC XXXX: Dynamic Flooding
+             on Dense Graphs";
+        }
+      }
+      description
+        "last flag";
+    }
+    list ospfv2-router-id-tlv-entry {
+      description
+        "list of ospfv2 router-ID TLV entries";
+      uses ospfv2-area-router-id-tlv-entry;
+    }
+  }
 
+  grouping ospfv3-area-router-id-tlv-entry {
+    description
+      "ospfv3 area router ID TLV enties";
+    leaf connection-type {
+      type uint8;
+      description
+        "Defines the connection type ";
+    }
+    leaf number-of-ids {
+      type uint16;
+      description
+        "the number of ID present in this
+         TLV entry";
+    }
+    container router-id {
+      when '../connection-type = 1' {
+        description
+          "Only applies when
+           connection type is Router";
+      }
+      description
+        "originating-router-id";
+      leaf-list originating-router-id {
+        type yang:dotted-quad;
+        description
+          "list of the
+           originating-router-ids";
+      }
+    }
+    container designated-router-id {
+      when '../connection-type = 2' {
+        description
+          "Only applies when
+           connection type is designated Router";
+      }
+      description
+        "originating-router-id";
+      list originating-router-id-list {
+        description
+          "originating-router-id";
+        leaf originating-router-id {
+          type yang:dotted-quad;
+          description
+            "originating-router-ids";
+        }
+        leaf inteface-id {
+          type yang:dotted-quad;
+          description
+            "interface-ids";
+        }
+      }
+    }
+  }
 
-	identity ospfv2-dynamic-flooding-opaque-lsa {
-		base ospf:ospfv2-opaque-lsa-type;
-		description "OSPFv2 Dynamic Flooding Opaque LSA - Type 10";
-	}
+  grouping ospfv3-area-router-id-tlv {
+    description
+      "definition for OSPFv3 Dynamic flooding area
+       router-ID TLV";
+    leaf start-index {
+      type uint16;
+      description
+        "Starting index of the first
+         router/designated router ID";
+    }
+    leaf last-flag {
+      type bits {
+        bit last-router-designated-router-id {
+          description
+            "when set, this TLV is the
+             last Index in the full list
+             of router IDs for the area";
+          reference
+            "RFC XXXX: Dynamic
+             Flooding on Dense Graphs";
+        }
+      }
+      description
+        "dynamic flooding area router-ID
+         flag definitions";
+    }
+    list ospfv3-router-id-tlv-entry {
+      description
+        "list of OSPFv3 router-ID TLV entries";
+      uses ospfv3-area-router-id-tlv-entry;
+    }
+  }
 
-	identity ospfv3-dynamic-flooding-opaque-lsa {
-		base ospf:ospfv3-lsa-type;
-		description "OSPFv3 Dynamic Flooding LSA - Type 16";
-	}
+  grouping flooding-path-tlv {
+    description
+      "definition for OSPFv2/OSPFv3 Flooding Path TLV";
+    leaf start-index {
+      type uint16;
+      description
+        "Starting index of the first
+         router/designated router ID";
+    }
+    leaf-list indices {
+      type uint16;
+      description
+        "index of the next router ID in the
+         path";
+    }
+  }
 
+  grouping flooding-request-bit {
+    description
+      "definition for adding Floding request bit (FR-bit) to
+       LLS type-1 extended options. Need to be defined";
+  }
 
-	grouping ospf-area-leader-tlv {
-		description "Area leader TLV for OSPFv2/OSPFv3. 
-			     A TLV of RI LSA";
-		leaf priority {
-			type uint8;
-			description "Router's priority for Area leader";
-		}
-		leaf Algorithm {
-			type uint8;
-			description "Router's Algorithm to calculate the Flooding 
-				     Topology.";
-		}
-	}
+  grouping link-attribute-bits-tlv {
+    description
+      "definition for link-attribute-bits-tlv, a sub-tlv for
+       OSPFv2 Extended link TLV and a sub-tlv for OSPFv3
+       router-link TLV";
+    leaf link-attributes-bits {
+      type bits {
+        bit LEEF {
+          description
+            "when set, conveys which edges
+             are currently enabled in the
+             flooding topology";
+        }
+      }
+      description
+        "link-attributes-bits";
+    }
+  }
 
-	grouping dynamic-flooding-tlv {
-		description "Dynamic-flooding TLV for OSPFv2/OSPFv3. 
-			     A TLV of RI LSA";
-		leaf-list algorithm {
-			type uint8;
-			description "List of Algorithms supported by the 
-				     advertising node";
-			}
-		}
+  /*
+   * Dynamic flooding config augmentation to OSPF Module
+   */
 
-	grouping ospfv2-area-router-id-tlv-entry {
-		description "ospfv2 area router ID TLV enties";
-		leaf connection-type {
-			type uint8;
-			description "Defines the connection type ";
-		}
-		leaf number-of-ids {
-			type uint16;
-			description "the number of ID present in this TLV entry";
-		}
-		leaf-list originating-router-id {
-			type yang:dotted-quad;
-			description "list of the originating-router-ids";
+  grouping area-leader-configuration {
+    description
+      "Enable area leader capability";
+    leaf enable {
+      type boolean;
+      default "false";
+      description
+        "Enable area leader capability";
+    }
+    leaf priority {
+      type uint8;
+      description
+        "Area leader priority";
+    }
+    leaf algorithm {
+      type uint8;
+      description
+        "Dynamic flooding algorithm selection";
+    }
+  }
 
-		}
-	}
+  augment
+    "/rt:routing/rt:control-plane-protocols/"
+  + "rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "Dynamic-flooding config model
+       augmentation";
+    container dynamic-flooding {
+      description
+        "to Enable/Disable dynamic flooding
+         for this specific OSPF area";
+      leaf enable {
+        type boolean;
+        description
+          "Enable/Disable dynamic-flooding";
+      }
+      container area-leader {
+        description
+          "Area leader configuration parameters";
+        uses area-leader-configuration;
+      }
+    }
+  }
 
-	grouping ospfv2-area-router-id-tlv {
-		description "definition for OSPFv2 Dynamic flooding area 
-			     router-ID TLV";
-		leaf start-index {
-			type uint16;
-			description "Starting index of the first
-				     router/designated router ID"; 
-		}
-		leaf last-flag {
-			type bits {
-				bit last-router-designated-router-id {
-					description 
-					  "when set, this TLV is the
-					   last Index in the full list
-					   of router IDs for the area"; 
-					reference 
-					  "RFC XXXX: Dynamic Flooding
-					   on Dense Graphs"; 
-				}
-			}
-			description "last flag";
-		}
-		list ospfv2-router-id-tlv-entry {
-			description "list of ospfv2 router-ID TLV entries";
-			uses ospfv2-area-router-id-tlv-entry;
-		}
-	}
+  /*
+   * Dynamic flooding state augmentation to OSPF2 module
+   */
 
-	grouping ospfv3-area-router-id-tlv-entry {
-		description "ospfv3 area router ID TLV enties";
-		leaf connection-type {
-			type uint8;
-			description "Defines the connection type ";
-		}
-		leaf number-of-ids {
-			type uint16;
-			description "the number of ID present in this
-				     TLV entry";
-		}
-		choice originating-router-id {
-			description "list of the originating-router-ids";
-			container router-id {
-				when "derived-from(../connection-type,'router')" {
-					description "Only applies when
-						     connection type is Router";
-				}
-				description "originating-router-id";
-				leaf-list originating-router-id {
-					type yang:dotted-quad;
-					description "list of the 
-						     originating-router-ids";
-				}
-			}
-			container designated-router-id {
-				when "derived-from(../connection-type,'designated-router')" {
-					description "Only applies when
-						     connection type is designated Router"; 
-				}
-				description "originating-router-id";
-				list originating-router-id-list {
-					description "originating-router-id";
-					leaf originating-router-id{
-						type yang:dotted-quad;
-						description "originating-router-ids";
-					}
-					leaf inteface-id{
-						type yang:dotted-quad;
-						description "interface-ids";
-					}
-				}
-			}
-		}
-	}
+  augment
+    "/rt:routing/rt:control-plane-protocols/"
+  + "rt:control-plane-protocol/ospf:ospf/ospf:areas/"
+  + "ospf:area/ospf:database/ospf:area-scope-lsa-type/"
+  + "ospf:area-scope-lsas/ospf:area-scope-lsa/"
+  + "ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "dynamic flooding TLVs augmentation";
+    container area-leader-tlv {
+      description
+        "Area-leader-tlv";
+      uses ospf-area-leader-tlv;
+    }
+    container dynamic-flooding-tlv {
+      description
+        "dynamic-flooding-tlv";
+      uses dynamic-flooding-tlv;
+    }
+  }
 
-	grouping ospfv3-area-router-id-tlv {
-		description "definition for OSPFv3 Dynamic flooding area
-			     router-ID TLV"; 
-		leaf start-index {
-			type uint16;
-			description "Starting index of the first
-				     router/designated router ID"; 
-		}
-		leaf last-flag {
-			type bits {
-				bit last-router-designated-router-id {
-					description 
-					  "when set, this TLV is the
-					   last Index in the full list
-					   of router IDs for the area"; 
-					reference "RFC XXXX: Dynamic
-						   Flooding on Dense Graphs"; 
-				}
-			}
-			description "dynamic flooding area router-ID
-				     flag definitions";
-		}
-		list ospfv3-router-id-tlv-entry {
-			description "list of OSPFv3 router-ID TLV entries";
-			uses ospfv3-area-router-id-tlv-entry;
-		}
-	}
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/ospf:ospf/ospf:areas/"
+        + "ospf:area/ospf:database/ospf:area-scope-lsa-type/"
+        + "ospf:area-scope-lsas/ospf:area-scope-lsa/"
+        + "ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "ospfv2-dynamic-flooding-opaque-lsa augmentation";
+    container ospfv2-dynamic-flooding-opaque-lsa {
+      description
+        "OSPFv2 Dynamic flooding opaque LSA.";
+      // uses unknown-tlvs;
+      container ospfv2-area-router-id-tlv {
+        description
+          "ospfv2-area-router-id-tlv";
+        uses ospfv2-area-router-id-tlv;
+      }
+      container flooding-path-tlv {
+        description
+          "ospf flooding-path-tlv";
+        uses flooding-path-tlv;
+      }
+    }
+  }
 
-	grouping flooding-path-tlv {
-		description "definition for OSPFv2/OSPFv3 Flooding Path TLV";
-		leaf start-index {
-			type uint16;
-			description "Starting index of the first
-				     router/designated router ID"; 
-		}
-		leaf-list indices {
-			type uint16;
-			description "index of the next router ID in the
-				     path"; 
-		}
-	}
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/ospf:ospf/ospf:areas/"
+        + "ospf:area/ospf:database/ospf:area-scope-lsa-type/"
+        + "ospf:area-scope-lsas/ospf:area-scope-lsa/"
+        + "ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/"
+        + "ospf:opaque/ospf:extended-link-opaque/"
+        + "ospf:extended-link-tlv" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "ospf-link-attributes-bits-tlv augmentation";
+    container ospf-link-attributes-bits-tlv {
+      description
+        "ospf link attributes bits tlv.";
+      uses link-attribute-bits-tlv;
+    }
+  }
 
-	grouping flooding-request-bit{
-		description 
-		  "definition for adding Floding request bit (FR-bit) to
-		   LLS type-1 extended options. Need to be defined"; 
-	}
+  /*
+   * Dynamic flooding state augmentation to OSPF3 module
+   */
 
-	grouping link-attribute-bits-tlv{
-		description 
-		  "definition for link-attribute-bits-tlv, a sub-tlv for
-		   OSPFv2 Extended link TLV and a sub-tlv for OSPFv3
-		   router-link TLV";
-		leaf link-attributes-bits{
-			type bits {
-				bit LEEF {
-					description 
-					  "when set, conveys which edges
-					   are currently enabled in the
-					   flooding topology";  
-				}
-			}
-			description "link-attributes-bits";
-		}
-	}
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/ospf:ospf/ospf:areas/"
+        + "ospf:area/ospf:database/ospf:area-scope-lsa-type/"
+        + "ospf:area-scope-lsas/ospf:area-scope-lsa/"
+        + "ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body/"
+        + "ospf:router-information" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "dynamic flooding TLVs augmentation";
+    container area-leader-tlv {
+      description
+        "Area-leader-tlv";
+      uses ospf-area-leader-tlv;
+    }
+    container dynamic-flooding-tlv {
+      description
+        "dynamic-flooding-tlv";
+      uses dynamic-flooding-tlv;
+    }
+  }
 
-/*
-* Dynamic flooding config augmentation to OSPF Module
-*/
-	augment "/rt:routing/rt:control-plane-protocols/" +
-	  "rt:control-plane-protocol/ospf:ospf/ospf:areas/ospf:area" {
-		if-feature dynamic-flooding-ospf;
-		description "Dynamic-flooding config model
-			     augmentation"; 
-		container dynamic-flooding {
-			description "to Enable/Disable dynamic flooding
-				     for this specific OSPF area"; 
-			leaf enable {
-				type boolean;
-				description "Enable/Disable dynamic-flooding";
-			}
-		}
-	}
-
-/*
-* Dynamic flooding state augmentation to OSPF2 module
-*/
-
-	augment "/rt:routing/rt:control-plane-protocols/" + 
-		"rt:control-plane-protocol/ospf:ospf/ospf:areas/" + 
-		"ospf:area/ospf:database/ospf:area-scope-lsa-type/" +
-		"ospf:area-scope-lsas/ospf:area-scope-lsa/" +
-		"ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/ospf:opaque" {
-		if-feature dynamic-flooding-ospf;
-		description "dynamic flooding TLVs augmentation";
-		container area-leader-tlv {
-			description "Area-leader-tlv";
-			uses ospf-area-leader-tlv;
-		}
-		container dynamic-flooding-tlv {
-			description "dynamic-flooding-tlv";
-			uses dynamic-flooding-tlv;
-		}
-	}
-
-	augment "/rt:routing/rt:control-plane-protocols/" + 
-		"rt:control-plane-protocol/ospf:ospf/ospf:areas/" +
-		"ospf:area/ospf:database/ospf:area-scope-lsa-type/" +
-		"ospf:area-scope-lsas/ospf:area-scope-lsa/" +
-		"ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body" {
-		if-feature dynamic-flooding-ospf;
-		description "ospfv2-dynamic-flooding-opaque-lsa augmentation";
-		container ospfv2-dynamic-flooding-opaque-lsa {
-
-			description "OSPFv2 Dynamic flooding opaque LSA.";
-//			uses unknown-tlvs;
-			container ospfv2-area-router-id-tlv {
-				description "ospfv2-area-router-id-tlv";
-				uses ospfv2-area-router-id-tlv;
-			}
-			container flooding-path-tlv {
-				description "ospf flooding-path-tlv";
-				uses flooding-path-tlv;
-			}
-		}
-	}
-
-	augment "/rt:routing/rt:control-plane-protocols/" +
-		"rt:control-plane-protocol/ospf:ospf/ospf:areas/" +
-		"ospf:area/ospf:database/ospf:area-scope-lsa-type/" +
-		"ospf:area-scope-lsas/ospf:area-scope-lsa/" +
-		"ospf:version/ospf:ospfv2/ospf:ospfv2/ospf:body/" +
-		"ospf:opaque/ospf:extended-link-opaque/" +
-		"ospf:extended-link-tlv" {
-		if-feature dynamic-flooding-ospf;
-		description "ospf-link-attributes-bits-tlv augmentation";
-		container ospf-link-attributes-bits-tlv {
-			description "ospf link attributes bits tlv.";
-			uses link-attribute-bits-tlv;
-		}
-	}
-
-/*
-* Dynamic flooding state augmentation to OSPF3 module
-*/
-	augment "/rt:routing/rt:control-plane-protocols/" +
-		"rt:control-plane-protocol/ospf:ospf/ospf:areas/" +
-		"ospf:area/ospf:database/ospf:area-scope-lsa-type/" +
-		"ospf:area-scope-lsas/ospf:area-scope-lsa/" +
-		"ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body/" + 
-		"ospf:router-information" {
-		if-feature dynamic-flooding-ospf;
-		description "dynamic flooding TLVs augmentation";
-		container area-leader-tlv {
-			description "Area-leader-tlv";
-			uses ospf-area-leader-tlv;
-		}
-		container dynamic-flooding-tlv {
-			description "dynamic-flooding-tlv";
-			uses dynamic-flooding-tlv;
-		}
-	}
-
-	augment "/rt:routing/rt:control-plane-protocols/" +
-		"rt:control-plane-protocol/ospf:ospf/ospf:areas/" +
-		"ospf:area/ospf:database/ospf:area-scope-lsa-type/" +
-		"ospf:area-scope-lsas/ospf:area-scope-lsa/" +
-		"ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body" {
-		if-feature dynamic-flooding-ospf;
-		description "ospfv3-dynamic-flooding-opaque-lsa
-			     augmentation";
-		container ospfv3-dynamic-flooding-opaque-lsa {
-
-			description "ospfv3-dynamic-flooding-opaque-lsa
-				     definition";
-//			uses unknown-tlvs;
-			container ospfv3-area-router-id-tlv {
-				description "ospfv3-area-router-id-tlv";
-				uses ospfv3-area-router-id-tlv;
-			}
-			container flooding-path-tlv {
-				description "ospf flooding-path-tlv";
-				uses flooding-path-tlv;
-			}
-
-		}
-	}
+  augment "/rt:routing/rt:control-plane-protocols/"
+        + "rt:control-plane-protocol/ospf:ospf/ospf:areas/"
+        + "ospf:area/ospf:database/ospf:area-scope-lsa-type/"
+        + "ospf:area-scope-lsas/ospf:area-scope-lsa/"
+        + "ospf:version/ospf:ospfv3/ospf:ospfv3/ospf:body" {
+    if-feature "dynamic-flooding-ospf";
+    description
+      "ospfv3-dynamic-flooding-opaque-lsa
+       augmentation";
+    container ospfv3-dynamic-flooding-opaque-lsa {
+      description
+        "ospfv3-dynamic-flooding-opaque-lsa
+         definition";
+      //  uses unknown-tlvs;
+      container ospfv3-area-router-id-tlv {
+        description
+          "ospfv3-area-router-id-tlv";
+        uses ospfv3-area-router-id-tlv;
+      }
+      container flooding-path-tlv {
+        description
+          "ospf flooding-path-tlv";
+        uses flooding-path-tlv;
+      }
+    }
+  }
 }
+
 <CODE ENDS>
 ]]></artwork>
        </figure>
@@ -679,7 +775,7 @@ module ietf-dynamic-flooding-ospf {
      </t>
      <section title="Tree Diagram">
        <figure align="left">
-	 <artwork align="left"><![CDATA[
+         <artwork align="left"><![CDATA[
 module: ietf-isis-dynflood
   augment /rt:routing/rt:control-plane-protocols
             /rt:control-plane-protocol/isis:isis:
@@ -753,7 +849,7 @@ module: ietf-isis-dynflood
      </section>
      <section title="IS-IS YANG Module">
        <figure align="left">
-	 <artwork align="left"><![CDATA[
+         <artwork align="left"><![CDATA[
 <CODE BEGINS> file "ietf-isis-dynflood@2019-09-01.yang"
 module ietf-isis-dynflood {
   yang-version 1.1;
@@ -1090,7 +1186,7 @@ module ietf-isis-dynflood {
       leaf algorithm {
         type uint8;
         description 
-	  "Algorithm index for computing the flooding topology";
+          "Algorithm index for computing the flooding topology";
       }
     }
   }
@@ -1139,7 +1235,7 @@ module ietf-isis-dynflood {
           bit last {
             position 0;
             description 
-	      "Set if this is the highest set of indices in the area.";
+              "Set if this is the highest set of indices in the area.";
           }
         }
         description "Flags field in the TLV.";
@@ -1208,20 +1304,20 @@ module ietf-isis-dynflood {
        strings with RFC numbers for the associated document once it is
        published.
        <list style="hanging">
-	 <t hangText="AAAA">
-	   <xref target="I-D.ietf-ospf-yang">YANG Data Model for OSPF Protocol</xref>
-	 </t>
-	 <t hangText="XXXX">
-	   This document
-	 </t>
-	 <t hangText="YYYY">
-	   <xref target="I-D.ietf-lsr-dynamic-flooding">Dynamic
-	   Flooding on Dense Graphs</xref>
-	 </t>
-	 <t hangText="ZZZZ">
-	   <xref target="I-D.ietf-isis-yang-isis-cfg">YANG Data Model
-	   for IS-IS Protocol</xref>
-	 </t>
+         <t hangText="AAAA">
+           <xref target="I-D.ietf-ospf-yang">YANG Data Model for OSPF Protocol</xref>
+         </t>
+         <t hangText="XXXX">
+           This document
+         </t>
+         <t hangText="YYYY">
+           <xref target="I-D.ietf-lsr-dynamic-flooding">Dynamic
+             Flooding on Dense Graphs</xref>
+           </t>
+           <t hangText="ZZZZ">
+             <xref target="I-D.ietf-isis-yang-isis-cfg">YANG Data Model
+               for IS-IS Protocol</xref>
+           </t>
        </list>
      </t>
      <t>
@@ -1243,23 +1339,6 @@ module ietf-isis-dynflood {
        URI: urn:ietf:params:xml:ns:yang:ietf-isis-dynflood
        Registrant Contact: The IESG.
        XML: N/A, the requested URI is an XML namespace.
-]]></artwork>
-     </figure>
-     <t>
-       This document registers two YANG modules in the YANG Module Names
-       registry <xref target="RFC6020"/>.
-     </t>
-     <figure align="left">
-       <artwork align="left"><![CDATA[
-        name: ietf-ospf-df
-        namespace: urn:ietf:params:xml:ns:yang:ietf-dynamic-flooding-ospf
-        prefix: ospf-df
-        reference: RFC XXXX
-
-        name: ietf-isis-dynflood
-        namespace: urn:ietf:params:xml:ns:yang:ietf-isis-dynflood
-        prefix: isis-dynflood
-        reference: RFC XXXX
 ]]></artwork>
      </figure>
    </section>
@@ -1287,7 +1366,6 @@ module ietf-isis-dynflood {
      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
      &RFC2119;
      &RFC3688;
-     &RFC6020;
      &RFC7950;
      &RFC8174;
      &RFC8342;
@@ -1299,18 +1377,18 @@ module ietf-isis-dynflood {
 
      <reference anchor="ISO10589">
        <front>
-	 <title>
-	   Intermediate System to Intermediate System
-	   Intra-Domain Routing Exchange Protocol for use in Conjunction
-	   with the Protocol for Providing the Connectionless-mode Network
-	   Service (ISO 8473)
-	 </title>
-	 <author>
-	   <organization abbrev="ISO">
-	     International Organization for Standardization
-	   </organization>
-	 </author>
-	 <date year="2002" month="Nov."/>
+         <title>
+           Intermediate System to Intermediate System
+           Intra-Domain Routing Exchange Protocol for use in Conjunction
+           with the Protocol for Providing the Connectionless-mode Network
+           Service (ISO 8473)
+         </title>
+         <author>
+           <organization abbrev="ISO">
+             International Organization for Standardization
+           </organization>
+         </author>
+         <date year="2002" month="Nov."/>
        </front>
        <seriesInfo name="ISO/IEC" value="10589:2002"/>
      </reference>
